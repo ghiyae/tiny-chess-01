@@ -7,10 +7,10 @@
 Chess engine in 4 KB of Python, built for the [make.fun bounty](https://make.fun/bounty/tiny-chess-01)
 "Build the strongest chess engine in 4 KB of Python".
 
-## Engine (v6b)
+## Engine (v7)
 
-- 0x88 board, alpha-beta negamax, iterative deepening (max depth 5)
-- Global node cap 100,000 per move (deterministic: fixed depth/nodes,
+- 0x88 board, alpha-beta negamax, iterative deepening (max depth 6)
+- Global node cap 200,000 per move (deterministic: fixed depth/nodes,
   no clock, no randomness — final trials replay move-for-move)
 - Quiescence search: captures + promotions, all evasions when in check,
   stand-pat only when not in check, mate detection, delta pruning,
@@ -19,7 +19,7 @@ Chess engine in 4 KB of Python, built for the [make.fun bounty](https://make.fun
   (maintained in make/unmake), plus a mating term that drives the
   enemy king to the edge and brings our king closer when up a queen
 - Transposition table, 2 killer moves per ply
-- `main.py` is the whole engine: 4,057 bytes, packed (LZMA + base85)
+- `main.py` is the whole engine: 4,062 bytes, packed (LZMA + base85)
   from the readable source. It reads, imports or execs no other file
   in the repository. Python 3.13, stdlib only.
 
@@ -37,9 +37,10 @@ MAKEFUN_ENV_URL=http://127.0.0.1:PORT python3 main.py
 
 ## Practice results (local, real env server)
 
-- trial-0: 1W 2D 3L, Elo 1099
-- trial-1: 0W 0D 6L, Elo 0
-- trial-2: 1W 1D 4L, Elo 997
+- trial-0: 2W 0D 4L, Elo 1099
+- trial-1: 1W 0D 5L, Elo 876
+- trial-2: 1W 0D 5L, Elo 876
 
-True Elo is roughly 900–1,100 — below the 1,154 practice floor, but
-submitted as the best version available before the deadline.
+Mean Elo ~950 — below the 1,154 practice floor, but stronger than
+v6b (mean ~699; trial-0 1099, trial-1 0, trial-2 997). v7 beats the
+depth-4 anchor, which v6 never did.

@@ -7,19 +7,20 @@
 Chess engine in 4 KB of Python, built for the [make.fun bounty](https://make.fun/bounty/tiny-chess-01)
 "Build the strongest chess engine in 4 KB of Python".
 
-## Engine (v7)
+## Engine (v14)
 
 - 0x88 board, alpha-beta negamax, iterative deepening (max depth 6)
 - Global node cap 200,000 per move (deterministic: fixed depth/nodes,
   no clock, no randomness — final trials replay move-for-move)
 - Quiescence search: captures + promotions, all evasions when in check,
-  stand-pat only when not in check, mate detection, delta pruning,
-  bad-capture pruning
+  stand-pat only when not in check, mate detection, delta pruning
+  (bad-capture pruning removed — it cost more than it saved)
 - Evaluation: material + Michniewski piece-square tables, incremental
   (maintained in make/unmake), plus a mating term that drives the
-  enemy king to the edge and brings our king closer when up a queen
+  enemy king to the edge and brings our king closer when up a queen,
+  plus a bishop-pair bonus of +30 cp
 - Transposition table, 2 killer moves per ply
-- `main.py` is the whole engine: 4,062 bytes, packed (LZMA + base85)
+- `main.py` is the whole engine: 4,092 bytes, packed (LZMA + base85)
   from the readable source. It reads, imports or execs no other file
   in the repository. Python 3.13, stdlib only.
 
@@ -37,10 +38,11 @@ MAKEFUN_ENV_URL=http://127.0.0.1:PORT python3 main.py
 
 ## Practice results (local, real env server)
 
-- trial-0: 2W 0D 4L, Elo 1099
-- trial-1: 1W 0D 5L, Elo 876
-- trial-2: 1W 0D 5L, Elo 876
+- trial-0: 2W 1D 3L, Elo 1191
+- trial-1: 2W 0D 4L, Elo 1099
+- trial-2: 2W 0D 4L, Elo 1099
 
-Mean Elo ~950 — below the 1,154 practice floor, but stronger than
-v6b (mean ~699; trial-0 1099, trial-1 0, trial-2 997). v7 beats the
-depth-4 anchor, which v6 never did.
+Mean Elo ~1130 — above v7 in every trial (v7 mean ~950; trial-0
+1099, trial-1 876, trial-2 876). Trial-0 clears the 1,154 practice
+floor; trials 1–2 sit just under it. v14 beats the depth-4 anchor
+and draws the nodes-500k anchor in trial-0.
